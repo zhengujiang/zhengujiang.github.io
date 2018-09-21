@@ -251,6 +251,206 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/21/前端性能优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhengu Jiang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/xiaoxin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhengu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/09/21/前端性能优化/" itemprop="url">
+                  “前端性能优化”
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-21T10:43:00+08:00">
+                2018-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/原生JavaScript/" itemprop="url" rel="index">
+                    <span itemprop="name">原生JavaScript</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="网页的加载"><a href="#网页的加载" class="headerlink" title="网页的加载"></a>网页的加载</h2><p>网页加载大致分为五步：</p>
+<blockquote>
+<ol>
+<li>HTML代码转化为DOM</li>
+<li>CSS代码转化为CSSDOM</li>
+<li>结合DOM和CSSOM，生成一棵渲染树</li>
+<li>生成布局（layout），即将所有渲染树的所有节点进行平面合成</li>
+<li>将布局绘制（paint）在屏幕上</li>
+</ol>
+</blockquote>
+<p>网页加载性能消耗主要在第四与第五步，这两步合称为“渲染”。</p>
+<h2 id="重排和重绘"><a href="#重排和重绘" class="headerlink" title="重排和重绘"></a>重排和重绘</h2><p>在网页生成的时候，至少会渲染一次，即首次渲染。用户访问过程中，也会不断重新渲染。</p>
+<blockquote>
+<ul>
+<li>修改DOM</li>
+<li>修改样式表</li>
+<li>用户事件（比如鼠标悬停、页面滚动、输入框键入文字、改变窗口大小等等）</li>
+</ul>
+</blockquote>
+<p>重排：重新生成布局<br>重绘：重新绘制<br>重绘不一定会触发重排，但重排一定会触发重绘</p>
+<p>提高网页性能就必须减少“重绘”和“重排”，尽量少触发重新渲染。</p>
+<blockquote>
+<ul>
+<li>样式表越简单，重排和重绘就越快。</li>
+<li>重排和重绘的DOM元素层级越高，成本就越高。</li>
+<li>table元素的重排和重绘成本，要高于div元素</li>
+</ul>
+</blockquote>
+<h2 id="提高网页性能的方法"><a href="#提高网页性能的方法" class="headerlink" title="提高网页性能的方法"></a>提高网页性能的方法</h2><blockquote>
+<ol>
+<li>DOM 的多个读操作（或多个写操作），应该放在一起。不要两个读操作之间，加入一个写操作。</li>
+<li>如果某个样式是需要重排生成了，可以考虑进行缓存结果，避免下一次需要重新重排</li>
+<li>不要一条条地改变样式，而要通过改变class，一次性地改变样式。</li>
+<li>先将元素设为display: none（需要1次重排和重绘），然后对这个节点进行100次操作，最后再恢复显示（需要1次重排和重绘）。这样一来，你就用两次重新渲染，取代了可能高达100次的重新渲染。</li>
+<li>position属性为absolute或fixed的元素，重排的开销会比较小，因为不用考虑它对其他元素的影响。</li>
+<li>不可见的元素不影响重排和重绘,visibility : hidden的元素只对重绘有影响，不影响重排。</li>
+</ol>
+</blockquote>
+<h2 id="前端性能优化"><a href="#前端性能优化" class="headerlink" title="前端性能优化"></a>前端性能优化</h2><p>网络加载</p>
+<blockquote>
+<ol>
+<li>减少HTTP请求数<ul>
+<li>从设计实现层面简化页面</li>
+<li>资源合并与压缩</li>
+<li>合并css图片，使用精灵图</li>
+</ul>
+</li>
+<li>将CSS和JS放到外部文件中，避免使用style和script标签引入</li>
+<li>异步的加载JavaScript资源</li>
+<li>减少页面重定向</li>
+<li>按需加载</li>
+</ol>
+</blockquote>
+<p>页面渲染</p>
+<blockquote>
+<ol>
+<li>减少DOM元素数量和深度</li>
+<li>避免运行耗时的JavaScript</li>
+<li>把CSS资源引用放到HTML文件顶部,JavaScript文件引用放到HTML文件底部</li>
+</ol>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/20/闭包的理解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -577,7 +777,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -592,13 +792,6 @@
             </div>
           
 
-          
-            <div class="site-state-item site-state-tags">
-              
-                <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">标签</span>
-              
-            </div>
           
 
         </nav>
